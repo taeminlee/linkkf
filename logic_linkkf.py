@@ -76,6 +76,13 @@ class LogicLinkkf(object):
                 data3dict = json.loads(data3)
                 # print(data3dict)
                 video_url = data3dict[0]['file']
+            elif( 'linkkf.anig.me/vm' in url2):
+                # v 계열 처리
+                LogicLinkkf.referer = url
+                data2 = LogicLinkkf.get_html(url2)
+                tree2 = html.fromstring(data2)
+                url3 = tree2.xpath('//iframe')[0].attrib['src']
+                return LogicLinkkf.get_video_url_from_url(url2, url3)
             elif( 'linkkf' in url2):
                 # linkkf 계열 처리 => URL 리스트를 받아오고, 하나 골라 방문해서 m3u8을 받아온다.
                 LogicLinkkf.referer = url
@@ -107,6 +114,11 @@ class LogicLinkkf(object):
                 url3 = json.loads(data2)
                 logger.info("download url2 : %s , url3 : %s" % (url2, url3))
                 video_url = url3
+            elif('vimeo' in url2):
+                LogicLinkkf.referer = url
+                data2 = LogicLinkkf.get_html(url2)
+                regex = r"\"avc_url\":\"([^\"]*m3u8)\""
+                video_url = re.findall(regex, data2)[0]
             else:
                 logger.error("새로운 유형의 url 발생! %s %s" % (url, url2))
         except Exception as e:
