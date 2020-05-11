@@ -154,6 +154,9 @@ class LogicLinkkf(object):
             
             logger.info(video_url)
 
+            if(video_url is None):
+                logger.error("해석 불가능한 URL 발생!", video_url)
+
             return video_url
         except Exception as e:
             logger.error('Exception:%s', e)

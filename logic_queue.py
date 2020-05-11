@@ -111,7 +111,7 @@ class LogicQueue(object):
                 from .logic_linkkf import LogicLinkkf
                 entity.url = LogicLinkkf.get_video_url(entity.info['code'])
                 if entity.url is None:
-                    self.ffmpeg_status_kor = 'URL실패'
+                    entity.ffmpeg_status_kor = 'URL실패'
                     plugin.socketio_list_refresh()
                     continue
 
