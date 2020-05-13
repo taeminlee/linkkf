@@ -92,19 +92,26 @@ class LogicLinkkf(object):
                 cat = re.findall(regex, data2)[0]
                 regex = r"\"([^\"]*)\""
                 url3s = re.findall(regex, cat)
-                url3 = random.choice(url3s)
-                logger.info("download url : %s , url3 : %s" % (url, url3))
-                if('kftv' in url3):
-                    return LogicLinkkf.get_video_url_from_url(url2, url3)
-                elif (url3.startswith('/')):
-                    url3 = urlparse.urljoin(url2, url3)
-                    LogicLinkkf.referer = url2
-                    data3 = LogicLinkkf.get_html(url3)
-                    # print(data)
-                    regex2 = r'"([^\"]*m3u8)"'
-                    video_url = re.findall(regex2, data3)[0]
-                else:
-                    logger.error("새로운 유형의 url 발생! %s %s %s" % (url, url2, url3))
+                for url3 in url3s:
+                    try:
+                        if(video_url is not None):
+                            continue
+                        #url3 = random.choice(url3s)
+                        logger.info("download url : %s , url3 : %s" % (url, url3))
+                        if('kftv' in url3):
+                            return LogicLinkkf.get_video_url_from_url(url2, url3)
+                        elif (url3.startswith('/')):
+                            url3 = urlparse.urljoin(url2, url3)
+                            LogicLinkkf.referer = url2
+                            data3 = LogicLinkkf.get_html(url3)
+                            # print(data)
+                            regex2 = r"file: \"([^\"]*)\""
+                            video_url = re.findall(regex2, data3)[0]
+                        else:
+                            logger.error("새로운 유형의 url 발생! %s %s %s" % (url, url2, url3))
+                    except Exception as e:
+                        logger.error('Exception:%s', e)
+                        logger.error(traceback.format_exc())
             elif('kakao' in url2):
                 # kakao 계열 처리, 외부 API 이용
                 payload = {'inputUrl' : url2}
