@@ -28,7 +28,6 @@ from .logic_queue import LogicQueue
 
 #########################################################
 
-
 class LogicLinkkf(object):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
@@ -107,6 +106,7 @@ class LogicLinkkf(object):
                             # print(data)
                             regex2 = r"file: \"([^\"]*)\""
                             video_url = re.findall(regex2, data3)[0]
+                            video_url = '-headers referer:{0} {1}'.format(url3, video_url)
                         else:
                             logger.error("새로운 유형의 url 발생! %s %s %s" % (url, url2, url3))
                     except Exception as e:
