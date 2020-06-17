@@ -139,7 +139,7 @@ class LogicLinkkf(object):
             url = urlparse.urljoin(ModelSetting.get('linkkf_url'), episode_id)
             data = LogicLinkkf.get_html(url)
             tree = html.fromstring(data)
-            url2s = [tag.attrib['value']for tag in tree.xpath('//*[@id="body"]/div/div/span/center/select/option')]
+            url2s = [tag.attrib['value']for tag in tree.xpath('//select/option')]
             # url2s = filter(lambda url:
             #         ('kfani' in url) |
             #         ('linkkf' in url) | 
@@ -277,15 +277,14 @@ class LogicLinkkf(object):
                 data['detail'] = [{'정보없음':''}]
                 data['poster_url'] = None
 
-            tmp = tree.xpath('//*[@id="relatedpost"]/ul/li')
+            tmp = tree.xpath('//button')
             if tmp is not None:
                 data['episode_count'] = len(tmp)
             else:
                 data['episode_count'] = '0'
 
             data['episode'] = []
-            tags = tree.xpath('//*[@id="relatedpost"]/ul/li/a')
-            re1 = re.compile(r'\/(?P<code>\d+)')
+            tags = tree.xpath('//button/a')
 
             data['save_folder'] = data['title']
 
@@ -306,7 +305,7 @@ class LogicLinkkf(object):
                 entity['program_code'] = data['code']
                 entity['program_title'] = data['title']
                 entity['save_folder'] = Util.change_text_for_use_filename(data['save_folder'])
-                entity['code'] = re1.search(t.attrib['href']).group('code')
+                entity['code'] = urlparse.urlsplit(t.attrib['href']).path
                 data['episode'].append(entity)
                 entity['image'] = data['poster_url']
                 entity['title'] = t.text_content().strip().encode('utf8')
